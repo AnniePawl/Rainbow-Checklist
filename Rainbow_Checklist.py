@@ -1,126 +1,137 @@
-# Create empty list object to put in memory
-# Code will run within object and passs in value to add
-# Can be written at checklist = [] OR ...
-# checklist = list()
+# Imports
+import sys
+# from termcolor import colored
+from os import system, name
 
-checklist = []
+
+# Create empty list object to put in memory
+rainbow_checklist = []
 
 #CRUD (Create, Read, Update, Destroy) Functions
 def create(item):
-    checklist.append(item)
+    rainbow_checklist.append(item)
 
 def read(index):
-    return checklist[index]
+    return rainbow_checklist[index]
 
 def update(index, item):
-    checklist[index] = item
+    rainbow_checklist[index] = item
 
 def destroy(index):
-    checklist.pop(index)
+    rainbow_checklist.pop(index)
 
-# Loops over all items, prints everything in list
+# List all items functions- loops over all, prints all
 def list_all_items():
     index = 0
-    for list_item in checklist:
-        print("{} {}".format(index, list_item))
+    for list_item in rainbow_checklist:
+        print("{} {}".format(index, list_item.title()))
         index += 1
 
-#   Checklist Item
+# Check Items Off, and Uncheck
 def mark_completed(index):
-    checklist[index] = '√' + checklist[index]
-    return checklist[index]
+    rainbow_checklist[index] = '√' + rainbow_checklist[index]
+    return rainbow_checklist[index]
+def uncheck(index):
+    rainbow_checklist[int(index)] = rainbow_checklist[int(index)].replace("√", "")
+    return rainbow_checklist[index]
 
-
-# User Input Function
+# User Input Function, displays prompt and waits for input
 def user_input(prompt):
-    # the input function will display a message in the terminal
-    # and wait for user input.
     user_input = input(prompt)
-    # print("User input: {}".format(user_input))
     return user_input
 
-# Updates value in checklist with new value
+# Clear terminal between user selection for readability
+def clear():
+    if name == 'nt':
+        _=system('cls')
+    else:
+        _=system('clear')
+
+# Select Operation (Create, Read one item, View all items)
 def select(function_code):
-    # Create item
-    if function_code == "C":
-        input_item = user_input("Add an Item:")
+    if function_code.upper() == "C":
+        input_item = user_input("Add an item to your list:")
         create(input_item)
-
-    # Read item
-    elif function_code == "R":
-        item_index = user_input("Index Number?")
-        #Item_index must exist or program will crash.
-        print(read(int(item_index)))
-
-    # Print all items
-    elif function_code == "P":
+        print ("\x1b[6;30;42m" + "You've successfully added an item!")
         list_all_items()
 
-    elif function_code == "U":
-        num_index = int(user_input("Index Number?"))
-        item_index = user_input("Enter index item:")
-        update(num_index), item_index)
+    elif function_code.upper() == "R":
+        item_index = user_input("Enter index of item you'd like to view: ")
+        print(read(int(item_index)))
 
-    elif function_code == 'D':
-        index = int(user_input('Index Number?'))
+    elif function_code.upper() == "V":
+        list_all_items()
+
+    elif function_code.upper() == "U":
+        num_index = int(user_input("Enter index of item you want to update: "))
+        item_index = user_input("Enter replacement item:")
+        update(num_index, item_index)
+
+    elif function_code.upper() == "M":
+        item_index = user_input("Enter index of item you'd like to check off: ")
+        mark_completed(int(item_index))
+        list_all_items()
+
+    elif function_code.upper() == "UM":
+        item_index = user_input("Enter index of item you want to uncheck: ")
+        uncheck(int(item_index))
+        list_all_items()
+
+    elif function_code.upper() == "D":
+        index = int(user_input('Enter index of item you want to destroy:'))
         destroy(index)
 
-    # Check off item
-    elif function_code == "M":
-        item_index = int(user_input("Select item to check off:"))
-        mark_completed(item_index)
-
-    # Uncheck Item
-    # elif function_code == "UC":
-    #     item_index = int(user_input("Select item to uncheck:"))
-    #     un_mark(item_index)
-
     # Stops Infinite Loop
-    elif function_code == "Q":
+    elif function_code.upper() == "Q":
         return False
-    # Catch all
+    # Catch All
     else:
-        print("Unknown Option")
-
+        print("Whoops, Try Again!")
     return True
 
-#Test CRUD Functions
+
+# TESTS
 def test():
     create('grimy key card')
-    create('baby dragon')
     create('wiggly pinecone')
-    create('childish sugar packet ')
-
-    update(2, 'saucy succulent')
-    # destroy(1)
+    create('childish sugar packet')
+    create('baby dragon')
 
     # print(read(0))
     # print(read(1))
     # print(read(2))
-    # print(read(3))
 
-
-    # Test Check Mark Feature
+    # update(1,'saucy succulent')
+    # destroy(1)
+    #
+    # # Test Check Mark Feature
     # create('Jello Shots')
     # mark_completed(1)
     # print(read(1))
-
+    #
     # select('C')
     # list_all_items()
     # select('R')
     # list_all_items()
-
+    # select('V')
+    # select('Q')
+    # select('U')
+    #
     # user_value = user_input('Please Enter a Value:')
     # print(user_value)
 
-    # list_all_items()
 test()
 
-#Condition starts True, but changes to False during runtime
+# Condition starts True, but changes to False during runtime
 # Uncomment running = True when done debugging
-# running = True
 running = True
 while running:
     selection = user_input(
-        "Press C to add to list, R to Read from list, P to display list, U to update the list, M to check off list item and Q to quit")
+        "Welcome to Rainbow Checklist!\nPress 'C' to add an item to your list.\nPress 'R' to read one particular item from your list.\nPress 'V' to view all list items.\nPress 'U' to update your list.\nPress 'M' to check an item off your list.\nPress 'UM' if you want to uncheck an item from the list. \nPress 'D' to delete an item from your list.\nPress 'Q' to quit!")
+    clear()
     running = select(selection)
+
+# Stretch Challenges
+# √Add a function that unchecks checked items
+# √Display colored text in the terminal
+# √Clear terminal output between user selections
